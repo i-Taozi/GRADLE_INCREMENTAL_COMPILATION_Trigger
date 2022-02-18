@@ -1,10 +1,17 @@
+dist: trusty
 language: java
+jdk: oraclejdk8
 sudo: false
-env:
-  global:
-  - secure: GGlSRH5bh2xdGqrvYMlguSTu96ygGQnICBj5TCS3meq6CKZV8dzGuXighdEox7A7acDWpNKc1bJvuqjxJFWG9Mll1iaZu/4lsiCH71c5X8qVrOZ7fsomUzZEDA29Mh8LnXL/crw/9bYVllNNV02Mtl9UptudLVihuPewxtgo/Pw=
-  - secure: Etx9coeOnuaMtGokR+M6KmD1af0N71t5NZzinph6pW6hZ3fFscchDD7iolPqqJ/CNjxf/P230oaDO82GMu4OmFCDM+cEUI0QKPENKl61a62pOiaz2sZ5qEBcWWbSSGppRhcJXe9WNa41Yq9TuLQMiqxQ1aFB1imqjJ4LVdkd7T4=
-after_success:
-  - test -n "$TRAVIS_TAG" && ssh-keyscan -H repo.joist.ws >> ~/.ssh/known_hosts && ./gradlew uploadArchives
-jdk:
-  - oraclejdk8
+services:
+  - mongodb
+  - rabbitmq
+  - redis-server
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+install: true
+script:
+    - ./gradlew check --refresh-dependencies --no-daemon
