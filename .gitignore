@@ -1,24 +1,25 @@
-application.log
-application.log*
-target/
-bin/
-log.roo
-.project
-.classpath
-.springBeans
-.DS_Store
+# IntelliJ IDEA
+.idea
 *.iml
 *.ipr
 *.iws
-derby.log
-.idea
-activemq-data
-.settings/
-.sts4-cache
-.factorypath
-out
-/.gradle
-build/
-/classes
-.mvn
-mvnw*
+classes
+gen-external-apklibs
+
+# Gradle
+.gradle
+build
+gradle.properties
+
+# Maven
+target
+release.properties
+pom.xml.*
+
+# Java class files
+*.class
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+*.prefs

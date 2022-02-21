@@ -1,144 +1,83 @@
-Spring Integration Samples
-==========================
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-LoganSquare-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1550) [![Android Weekly](https://img.shields.io/badge/Android%20Weekly-141-blue.svg?style=flat)](http://androidweekly.net/issues/issue-141) [![Travis Build](https://travis-ci.org/bluelinelabs/LoganSquare.svg)](https://travis-ci.org/bluelinelabs/LoganSquare)
 
-# Note
+#LoganSquare
 
-This (main) branch requires Spring Integration 5.0 or above. For samples running against earlier versions of Spring Integration, use the __SI4.3.x__ and other branches.
+The fastest JSON parsing and serializing library available for Android. Based on Jackson's streaming API, LoganSquare is able to consistently outperform GSON and Jackson's Databind library by 400% or more<sup>[1](#1)</sup>. By relying on compile-time annotation processing to generate code, you know that your JSON will parse and serialize faster than any other method available.
 
-# Introduction
+By using this library, you'll be able to utilize the power of Jackson's streaming API without having to code tedius, low-level code involving `JsonParser`s or `JsonGenerator`s. Instead, just annotate your model objects as a `@JsonObject` and your fields as `@JsonField`s and we'll do the heavy lifting for you.
 
-Welcome to the **Spring Integration Samples** repository which provides **50+ samples** to help you learn [Spring Integration][]. To simplify your experience, the *Spring Integration* samples are split into 4 distinct categories:
+Don't believe it could improve upon Jackson Databind's or GSON's performance that much? Well, then check out the nifty graphs below for yourself. Not convinced? Feel free to build and run the BenchmarkDemo app included in this repository.
 
-* Basic
-* Intermediate
-* Advanced
-* Applications
-* DSL
+<a name="1"></a>
+*<sup>1</sup> <sub>Note: Our "400% or more" performance improvement metric was determined using ART. While LoganSquare still comes out on top with Dalvik, it seems as though the comparison is much closer. The benchmarks shown are actual screenshots taken from a 2nd gen Moto X.<sub>*
 
-Inside of each category you'll find a **README.md** file, which will contain a more detailed description of that category. Each sample also comes with its own **README.md** file explaining further details, e.g. how to run the respective sample.
+![Benchmarks](docs/benchmarks.jpg)
 
-| For additional samples, please also checkout the [Spring Integration Extensions][] project as it also provides numerous samples.
+##Download
 
-*Happy Integration!*
+Note that Gradle is the only supported build configuration for LoganSquare. To add the library to your app's build.gradle file.
 
-## Related GitHub projects
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+apply plugin: 'com.neenbedankt.android-apt'
 
-* [Spring Integration][]
-* [Spring Integration Extensions][]
-* [Spring Integration Templates][]
-* [Spring Integration Java Dsl][]
-* [Spring Integration Dsl Groovy][]
-* [Spring Integration Dsl Scala][]
-* [Spring Integration Pattern Catalog][]
+dependencies {
+    apt 'com.bluelinelabs:logansquare-compiler:1.3.6'
+    compile 'com.bluelinelabs:logansquare:1.3.6'
+}
 
-## Community Sample Projects
+```
+For the curious, the buildscript and apply plugin lines add the [apt plugin](https://bitbucket.org/hvisser/android-apt), which is what allows us to do compile-time annotation processing. The first dependency is what tells Gradle to process your JSON annotations, and the second dependency is our tiny 19kb runtime library that interfaces with the generated code for you.
 
-* [Xavier Padró][]
+##Usage
 
-# Categories
+Using LoganSquare is about as easy as it gets. Here are a few docs to get you started:
 
-Below is a short description of each category.
+ * [Creating your models](docs/Models.md)
+ * [Parsing from JSON](docs/Parsing.md)
+ * [Serializing to JSON](docs/Serializing.md)
+ * [Supporting custom types](docs/TypeConverters.md)
 
-## DSL
+##Proguard
+Like all libraries that generate dynamic code, Proguard might think some classes are unused and remove them. To prevent this, the following lines can be added to your proguard config file.
 
-This directory holds demos/samples for Spring Integration 4.0 Java Configuration as well as the Java DSL Extension.
+```
+-keep class com.bluelinelabs.logansquare.** { *; }
+-keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
+-keep class **$$JsonObjectMapper { *; }
+```
 
-## Basic
+##Why LoganSquare?
 
-This is a good place to get started. The samples here are technically motivated and demonstrate the bare minimum with regard to configuration and code to help you to get introduced to the basic concepts, API and configuration of Spring Integration. For example, if you are looking for an answer on how to wire a **Service Activator**  to a **Channel** or how to apply a **Gateway** to your message exchange or how to get started with using the **MAIL** or **XML** module, this would be the right place to find a relevant sample. The bottom line is that this is a good starting point.
+We're BlueLine Labs, a mobile app development company based in Chicago. We love this city so much that we named our company after the blue line of the iconic 'L.' And what's one of the most popular stops on the blue line? Well, that would be Logan Square of course. Does it have anything to do with JSON? Nope, but we're okay with that.
 
-* **amqp** - Demonstrates the functionality of the various **AMQP Adapters**
-* **barrier** - Shows how to suspend a thread until some asynchronous event occurs
-* **control-bus** - Demonstrates the functionality of the **Control Bus**
-* **enricher** - This sample demonstrates how the Enricher components can be used
-* **feed** - Demonstrates the functionality of the **Feed Adapter** (RSS/ATOM)
-* **file** - Demonstrates aspects of the various File Adapters (e.g. **File Inbound/Outbound Channel Adapters**, file **polling**)
-* **ftp** - Demonstrates the **FTP support** available with Spring Integration
-* **helloworld** - Very simple starting example illustrating a basic message flow (using **Channel**, **ServiceActivator**, **QueueChannel**)
-* **http** - Demonstrates request/reply communication when using a pair of **HTTP Inbound/Outbound gateways**
-* **jdbc** - Illustrates the usage of the Jdbc Adapters, including object persistence and retrieval
-* **jms** - Demonstrates **JMS** support available with Spring Integration
-* **jmx** - Demonstrates **JMX** support using a **JMX Attribute Polling Channel** and **JMX Operation Invoking Channel Adapter**
-* **jpa** - Shows the usage of the JPA Components can be used
-* **mail** - Example showing **IMAP** and **POP3** support
-* **mqtt** - Demonstrates the functionality of inbound and outbound **MQTT Adapters**
-* **mongodb** - Shows how to persist a Message payload to a **MongoDb** document store and how to read documents from **MongoDb**
-* **oddeven** - Example combining the functionality of **Inbound Channel Adapter**, **Filter**, **Router** and **Poller**
-* **jpa** - This sample illustrates how the JPA Components can be used
-* **quote** - Example demoing core EIP support using **Channel Adapter (Inbound and Stdout)**, **Poller** with Interval Trigers, **Service Activator**
-* **sftp** - Demonstrating SFTP support using **SFTP Inbound / Outbound Channel Adapters**
-* **tcp-amqp** - Demonstrates basic functionality of bridging the **Spring Integration TCP Adapters** with **Spring Integration AMQP Adapters**
-* **tcp-broadcast** - Demonstrates broadcasting a message to multiple connected TCP clients.
-* **tcp-client-server** - Demonstrates socket communication using **TcpOutboundGateway**, **TcpInboundGateway** and also uses a **Gateway** and a **Service Activator**
-* **tcp-with-headers** - Demonstrates sending headers along with the payload over TCP using JSON.
-* **testing-examples** - A series of test cases that show techniques to **test** Spring Integration applications.
-* **twitter** - Illustrates Twitter support using the **Twitter Inbound Channel Adapter**, **Twitter Inbound Search Channel Adapter**, **Twitter Outbound Channel Adapter**
-* **ws-inbound-gateway** - Example showing basic functionality of the **Web Service Gateway**
-* **ws-outbound-gateway** - Shows outbound web services support using the **Web Service Outbound Gateway**, **Content Enricher**, Composed Message Processor (**Chain**)
-* **xml** - Example demonstrates various aspects of the **Xml** support using an **XPath Splitter**, **XPath Router**, **XSLT Transformer** as well as **XPath Expression** support
-* **xmpp** - Show the support for [**XMPP**](https://en.wikipedia.org/wiki/Extensible_Messaging_and_Presence_Protocol) (formerly known as Jabber) using e.g. GoogleTalk
+##Props
 
-## Intermediate
+ * [Jackson's streaming API](https://github.com/FasterXML/jackson-core) for being a super-fast, awesome base for this project.
+ * [Instagram's ig-json-parser](https://github.com/Instagram/ig-json-parser) for giving us the idea for this project.
+ * [Jake Wharton's Butterknife](https://github.com/JakeWharton/butterknife) for being a great reference for annotation processing and code generation.
 
-This category targets developers who are already more familiar with the Spring Integration framework (past getting started), but need some more guidance while resolving more advanced technical problems that you have to deal with when switching to a Messaging architecture. For example, if you are looking for an answer on how to handle errors in various scenarios, or how to properly configure an **Aggregator** for the situations where some messages might not ever arrive for aggregation, or any other issue that goes beyond a basic understanding and configuration of a particular component to address "what else you can do?" types of problems, this would be the right place to find relevant examples.
+##License
 
-* **async-gateway** - Usage example of an asynchronous **Gateway**
-* **dynamic-poller** - Example shows usage of a **Poller** with a custom **Trigger** to change polling periods at runtime
-* **async-gateway** - Example shows usage of an **Asynchronous Gateway**
-* **errorhandling** - Demonstrates basic **Error Handling** capabilities of Spring Integration
-* **file-processing** - Sample demonstrates how to wire a message flow to process files either sequentially (maintain the order) or concurrently (no order).
-* **mail-attachments** - Demonstrates the processing of email attachments
-* **monitoring** The project used in the *[Spring Integration Management and Monitoring Webinar](https://www.springsource.org/node/3598)* Also available on the *[SpringSourceDev YouTube Channel](https://www.youtube.com/SpringSourceDev)*
-* **multipart-http** - Demonstrates the sending of HTTP multipart requests using Spring's **RestTemplate** and a Spring Integration **Http Outbound Gateway**
-* **rest-http** - This sample demonstrates how to send an HTTP request to a Spring Integration's HTTP service while utilizing Spring Integration's new HTTP Path usage. This sample also uses Spring Security for HTTP Basic authentication. With HTTP Path facility, the client program can send requests with URL Variables.
-* **retry-and-more** Provides samples showing the application of MessageHandler Advice Chains to endpoints - retry, circuit breaker, expression evaluating
-* **splitter-aggregator-reaper** A demonstration of implementing the Splitter and Aggregator *Enterprise Integration Patterns* (EIP) together. This sample also provides a concrete example of a [message store reaper][] in action.
-* **stored-procedures-derby**  Provides an example of the stored procedure Outbound Gateway using *[Apache Derby](https://db.apache.org/derby/)*
-* **stored-procedures-ms** Provides an example of the stored procedure Outbound Gateway using *Microsoft SQL Server*
-* **stored-procedures-oracle** Provides an example of the stored procedure Outbound Gateway using *ORACLE XE*
-* **stored-procedures-postgresql** Provides an example of the stored procedure Outbound Gateway using *[PostgreSQL](https://www.postgresql.org/)*
-* **tcp-async-bi-directional** - Demonstrates the use of *Collaborating Channel Adapters* for arbitrary async messaging (not request/reply) between peers.
-* **tcp-client-server-multiplex** - Demonstrates the use of *Collaborating Channel Adapters* with multiple in-flight requests/responses over a single connection.
-* **travel** - More sophisticated example showing the retrieval of weather (SOAP Web Service) and traffic (HTTP Service) reports using real services
-* **tx-synch** Provides a sample demonstrating the use of transaction synchronization, renaming an input file to a different filename, depending on whether the transaction commits, or rolls back.
+    Copyright 2015 BlueLine Labs, Inc.
 
-## Advanced
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-This category targets advanced developers who are quite familiar with Spring Integration but are looking to address a specific custom need by extending the Spring Integration public API. For example, if you are looking for samples showing how to implement a custom **Channel** or **Consumer** (event-based or polling-based), or you are trying to figure out what is the most appropriate way to implement a custom **BeanParser** on top of the Spring Integration BeanParser hierarchy when implementing a custom namespace, this would be the right place to look. Here you can also find samples that will help you with adapter development. Spring Integration comes with an extensive library of adapters that allow you to connect remote systems with the Spring Integration messaging framework. However you might have a need to integrate with a system for which the core framework does not provide an adapter, so you have to implement your own. This category would include samples showing you how to implement various adapters.
+       http://www.apache.org/licenses/LICENSE-2.0
 
-* **advanced-testing-examples** - Example test cases that show advanced techniques to test Spring Integration applications
-* **dynamic-ftp** - Demonstrates one technique for sending files to dynamic destinations.
-* **dynamic-tcp-client** - Demonstrates a technique for dynamically creating TCP clients.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
-## Applications
 
-This category targets developers and architects who have a good understanding of Message-Driven architecture and Enterprise Integration Patterns, and have an above average understanding of Spring and Spring integration and who are looking for samples that address a particular business problem. In other words, the emphasis of samples in this category is '**business use cases**' and how they can be solved via a Messaging architecture and Spring Integration in particular. For example, if you are interested to see how a Loan Broker process or Travel Agent process could be implemented and automated via Spring Integration, this would be the right place to find these types of samples.
-
-* **cafe** - Emulates a simple operation of a coffee shop combining various Spring Integration adapters (Including **Router** and **Splitter**) see [Appendix A of the reference documentation](https://docs.spring.io/spring-integration/docs/current/reference/html/#samples) for more details. Implementations are provided for:
-  - AMQP
-  - JMS
-  - In memory channels
-* **cafe-scripted** - Scripted implementation of the classic **cafe** sample application. Supports **JavaScript**, **Groovy**, **Ruby**, and **Python**.
-* **loan-broker** - Simulates a simple banking application (Uses **Gateway**, **Chain**, **Header Enricher**, **Recipient List Router**, **Aggregator**) see [Appendix A of the reference documentation](https://docs.spring.io/spring-integration/docs/current/reference/html/#samples) for more details
-* **loanshark** This extension to the loan broker sample shows how to exchange messages between Spring Integration applications (and other technologies) using **UDP**.
-  **file-split-ftp** - Reads a file; splits into 3 based on contents; sends files over ftp; sends email with results.
-
-# Contributing
-
-See the [Spring Integration Contributor Guidelines](https://github.com/spring-projects/spring-integration/blob/master/CONTRIBUTING.adoc) for information about how to contribute to this repository.
-
-# Resources
-
-For more information, please visit the Spring Integration website at: [https://projects.spring.io/spring-integration/](https://projects.spring.io/spring-integration/)
-
-[Spring Integration]: https://github.com/spring-projects/spring-integration
-[Spring Integration Extensions]: https://github.com/spring-projects/spring-integration-extensions
-[Spring Integration Templates]: https://github.com/spring-projects/spring-integration-templates/tree/master/si-sts-templates
-[Spring Integration Java Dsl]: https://github.com/spring-projects/spring-integration-java-dsl
-[Spring Integration Dsl Groovy]: https://github.com/spring-projects/spring-integration-dsl-groovy
-[Spring Integration Dsl Scala]: https://github.com/spring-projects/spring-integration-dsl-scala
-[Spring Integration Pattern Catalog]: https://github.com/spring-projects/spring-integration-pattern-catalog
-
-[message store reaper]: https://docs.spring.io/spring-integration/api/org/springframework/integration/store/MessageGroupStoreReaper.html
-
-[Xavier Padró]: https://github.com/xpadro/spring-integration
